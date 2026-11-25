@@ -159,7 +159,24 @@ async function ensureFFmpeg(){
   ffmpeg = new FFmpeg();
   ffmpeg.on('log', ({ message }) => { if (/error/i.test(message)) log(message); });
   const base = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/';
+  const ffBase = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/';
+  // Fix "Failed to construct 'Worker'": browsers refuse a Worker whose script
+  // is cross-origin (the ffmpeg worker.js lives on the jsdelivr CDN).
+  // Build a self-contained worker by inlining its two relative imports
+  // (const.js, errors.js) and load it from a same-origin blob URL.
+  const [workerSrc, constSrc, errorsSrc] = await Promise.all([
+    fetch(ffBase + 'worker.js').then(r => r.text()),
+    fetch(ffBase + 'const.js').then(r => r.text()),
+    fetch(ffBase + 'errors.js').then(r => r.text()),
+  ]);
+  const stripExports = s => s.replace(/^export\s+/gm, '');
+  const bundledWorker = stripExports(constSrc) + '\n' + stripExports(errorsSrc) + '\n' +
+    workerSrc
+      .replace(/import\s*\{[^}]*\}\s*from\s*["']\.\/const\.js["'];?/g, '')
+      .replace(/import\s*\{[^}]*\}\s*from\s*["']\.\/errors\.js["'];?/g, '');
+  const classWorkerURL = URL.createObjectURL(new Blob([bundledWorker], { type: 'text/javascript' }));
   await ffmpeg.load({
+    classWorkerURL,
     coreURL: await toBlobURL(base + 'ffmpeg-core.js', 'text/javascript'),
     wasmURL: await toBlobURL(base + 'ffmpeg-core.wasm', 'application/wasm'),
   });
