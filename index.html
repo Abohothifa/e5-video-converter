@@ -226,6 +226,7 @@ convertBtn.addEventListener('click', async () => {
     }
     setProgress(98, 'جارٍ تجهيز الملف…');
     const data = await ffmpeg.readFile(outName);
+    if (!data || data.length === 0) throw new Error('الملف الناتج فارغ (0 بايت) — تعذّرت قراءة هذا الفيديو. جرّب ملفاً آخر.');
     const blob = new Blob([data], { type: 'video/mp4' });
     if (outUrl) URL.revokeObjectURL(outUrl);
     outUrl = URL.createObjectURL(blob);
