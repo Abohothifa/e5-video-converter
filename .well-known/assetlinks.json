@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.e5_video_converter.twa",
+        "sha256_cert_fingerprints": ["F0:BD:0B:73:F4:36:C8:A8:F2:95:44:62:BD:10:1E:4B:AC:0F:22:68:B8:46:BB:06:5C:E9:E2:17:05:8F:EA:39"]
+      }
+    }]
