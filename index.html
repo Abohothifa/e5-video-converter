@@ -172,13 +172,13 @@ function presetArgs(preset, inName, outName){
     ? 'scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:(ow-iw)/2:(oh-ih)/2'
     : 'scale=320:240:force_original_aspect_ratio=decrease,pad=320:240:(ow-iw)/2:(oh-ih)/2';
   if (preset === '640') {
-    return [['-i', inName, '-vf', scale, '-c:v', 'mpeg4', '-q:v', '22', '-r', '30',
+    return [['-i', inName, '-vf', scale, '-c:v', 'mpeg4', '-flags', '-mv4', '-bf', '0', '-q:v', '22', '-r', '30',
              '-c:a', 'aac', '-b:a', '128k', '-ac', '2', '-ar', '48000',
              '-movflags', '+faststart', outName]];
   }
   return [
-    ['-i', inName, '-vf', scale, '-c:v', 'mpeg4', '-b:v', '180k', '-pass', '1', '-r', '30', '-an', '-f', 'null', '-'],
-    ['-i', inName, '-vf', scale, '-c:v', 'mpeg4', '-b:v', '180k', '-pass', '2', '-r', '30',
+    ['-i', inName, '-vf', scale, '-c:v', 'mpeg4', '-flags', '-mv4', '-bf', '0', '-b:v', '180k', '-pass', '1', '-r', '30', '-an', '-f', 'null', '-'],
+    ['-i', inName, '-vf', scale, '-c:v', 'mpeg4', '-flags', '-mv4', '-bf', '0', '-b:v', '180k', '-pass', '2', '-r', '30',
      '-c:a', 'aac', '-b:a', '48k', '-ac', '1', '-ar', '48000', '-movflags', '+faststart', outName]
   ];
 }
